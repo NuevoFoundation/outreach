@@ -1,0 +1,505 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nuevo Foundation Outreach Preview</title>
+  <script>
+    (() => {
+      const param = new URLSearchParams(window.location.search).get("clawpilotTheme");
+      const theme =
+        param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+      document.documentElement.setAttribute("data-theme", theme);
+    })();
+  </script>
+  <style>
+    :root {
+      color-scheme: light;
+      --cp-bg: #f7f4ef;
+      --cp-bg-elevated: #fcfbf8;
+      --cp-surface: #ffffff;
+      --cp-surface-soft: #f5f5f5;
+      --cp-border: #dedede;
+      --cp-border-strong: #919191;
+      --cp-text: #242424;
+      --cp-text-muted: #5c5c5c;
+      --cp-text-soft: #6f6f6f;
+      --cp-accent: #b11f4b;
+      --cp-accent-hover: #9a1a41;
+      --cp-accent-soft: rgba(177, 31, 75, 0.08);
+      --cp-accent-fg: #ffffff;
+      --cp-success: #16a34a;
+      --cp-danger: #dc2626;
+      --cp-warning: #f59e0b;
+      --cp-link: #0078d4;
+      --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+      --cp-overlay: rgba(255, 255, 255, 0.8);
+      --cp-panel: rgba(255, 255, 255, 0.86);
+      --cp-panel-strong: rgba(255, 255, 255, 0.96);
+      --cp-sheen: rgba(255, 255, 255, 0.55);
+      --cp-highlight: rgba(177, 31, 75, 0.12);
+    }
+    html[data-theme="dark"] {
+      color-scheme: dark;
+      --cp-bg: #3d3b3a;
+      --cp-bg-elevated: #343231;
+      --cp-surface: #292929;
+      --cp-surface-soft: #2e2e2e;
+      --cp-border: #474747;
+      --cp-border-strong: #5f5f5f;
+      --cp-text: #dedede;
+      --cp-text-muted: #919191;
+      --cp-text-soft: #b0b0b0;
+      --cp-accent: #fd8ea1;
+      --cp-accent-hover: #fb7b91;
+      --cp-accent-soft: rgba(253, 142, 161, 0.14);
+      --cp-accent-fg: #1a1a1a;
+      --cp-success: #4ade80;
+      --cp-danger: #f87171;
+      --cp-warning: #fbbf24;
+      --cp-link: #4da6ff;
+      --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+      --cp-overlay: rgba(41, 41, 41, 0.88);
+      --cp-panel: rgba(41, 41, 41, 0.72);
+      --cp-panel-strong: rgba(41, 41, 41, 0.96);
+      --cp-sheen: rgba(255, 255, 255, 0.04);
+      --cp-highlight: rgba(253, 142, 161, 0.12);
+    }
+    :root {
+      --cp-nuevo-amber: #fcc600;
+      --cp-nuevo-amber-soft: #fff4cc;
+      --cp-nuevo-red: #e13126;
+      --cp-nuevo-cyan: #00bed5;
+      --cp-nuevo-green-soft: #f1f6f1;
+      --cp-nuevo-ink: #070f19;
+      --cp-nuevo-white: #ffffff;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--cp-bg);
+      color: var(--cp-text);
+      font-family: "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    button, a { font: inherit; }
+    .review-bar {
+      align-items: center;
+      background: var(--cp-bg-elevated);
+      border-bottom: 1px solid var(--cp-border);
+      display: flex;
+      gap: 16px;
+      justify-content: space-between;
+      padding: 12px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .review-title { font-size: 14px; font-weight: 700; }
+    .review-title span { color: var(--cp-text-muted); font-weight: 400; }
+    .review-actions { display: flex; gap: 8px; }
+    .view-button, .print-button {
+      background: var(--cp-surface);
+      border: 1px solid var(--cp-border);
+      border-radius: 0.625rem;
+      color: var(--cp-text);
+      cursor: pointer;
+      min-height: 36px;
+      padding: 7px 14px;
+    }
+    .view-button[aria-selected="true"] {
+      background: var(--cp-accent);
+      border-color: var(--cp-accent);
+      color: var(--cp-accent-fg);
+    }
+    .print-button:hover, .view-button:hover { border-color: var(--cp-border-strong); }
+    .preview-stage { padding: 28px 16px 56px; }
+    .preview-panel[hidden] { display: none; }
+
+    .flyer {
+      background: var(--cp-nuevo-white);
+      box-shadow: var(--cp-shadow);
+      color: var(--cp-nuevo-ink);
+      display: grid;
+      grid-template-rows: auto 1fr auto auto auto;
+      margin: 0 auto;
+      max-width: 816px;
+      min-height: 1056px;
+      overflow: hidden;
+      position: relative;
+    }
+    .flyer::before {
+      background: var(--cp-nuevo-amber);
+      content: "";
+      height: 12px;
+      left: 0;
+      position: absolute;
+      right: 0;
+      top: 0;
+    }
+    .flyer-header {
+      align-items: center;
+      display: flex;
+      justify-content: space-between;
+      padding: 42px 56px 24px;
+    }
+    .brand-logo { display: block; height: auto; max-width: 280px; width: 42%; }
+    .nonprofit-label {
+      color: var(--cp-text-muted);
+      font-size: 12px;
+      font-weight: 700;
+      text-align: right;
+      text-transform: uppercase;
+    }
+    .flyer-hero {
+      align-items: center;
+      display: grid;
+      gap: 38px;
+      grid-template-columns: minmax(0, 1.45fr) minmax(190px, 0.55fr);
+      padding: 18px 56px 36px;
+    }
+    .eyebrow {
+      color: var(--cp-nuevo-red);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0;
+      margin: 0 0 10px;
+      text-transform: uppercase;
+    }
+    h1 {
+      font-size: 48px;
+      letter-spacing: 0;
+      line-height: 1.04;
+      margin: 0;
+      max-width: 580px;
+    }
+    .hero-copy {
+      color: var(--cp-text-muted);
+      font-size: 18px;
+      line-height: 1.5;
+      margin: 20px 0 0;
+      max-width: 570px;
+    }
+    .mascot-frame {
+      align-self: stretch;
+      background: var(--cp-nuevo-green-soft);
+      border-radius: 16px;
+      min-height: 250px;
+      overflow: hidden;
+      padding: 18px;
+      position: relative;
+    }
+    .mascot-frame img { height: 100%; object-fit: contain; width: 100%; }
+    .programs {
+      border-bottom: 1px solid var(--cp-border);
+      border-top: 1px solid var(--cp-border);
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      margin: 0 56px;
+    }
+    .program { padding: 24px 22px 26px 0; }
+    .program + .program { border-left: 1px solid var(--cp-border); padding-left: 22px; }
+    .program-number {
+      color: var(--cp-nuevo-red);
+      font-size: 12px;
+      font-weight: 800;
+      margin-bottom: 7px;
+    }
+    .program:nth-child(2) .program-number { color: var(--cp-nuevo-cyan); }
+    .program h2 { font-size: 19px; letter-spacing: 0; margin: 0 0 8px; }
+    .program p { color: var(--cp-text-muted); font-size: 14px; line-height: 1.45; margin: 0; }
+    .impact {
+      background: var(--cp-nuevo-green-soft);
+      padding: 25px 56px 16px;
+    }
+    .impact-intro { align-items: baseline; display: flex; gap: 18px; margin-bottom: 18px; }
+    .impact-intro h2 { font-size: 24px; letter-spacing: 0; margin: 0; }
+    .impact-intro p { color: var(--cp-text-muted); font-size: 13px; line-height: 1.4; margin: 0; }
+    .impact-metrics { display: grid; gap: 15px 18px; grid-template-columns: repeat(3, 1fr); }
+    .metric { border-left: 3px solid var(--cp-nuevo-cyan); padding-left: 14px; }
+    .metric:nth-child(2), .metric:nth-child(5) { border-color: var(--cp-nuevo-amber); }
+    .metric:nth-child(3), .metric:nth-child(6) { border-color: var(--cp-nuevo-red); }
+    .metric strong { display: block; font-size: 24px; line-height: 1; }
+    .metric span { color: var(--cp-text-muted); display: block; font-size: 12px; line-height: 1.3; margin-top: 6px; }
+    .flyer-cta {
+      align-items: center;
+      background: var(--cp-nuevo-amber);
+      color: var(--cp-nuevo-ink);
+      display: grid;
+      gap: 30px;
+      grid-template-columns: 1fr auto;
+      padding: 30px 56px;
+    }
+    .flyer-cta h2 { font-size: 26px; letter-spacing: 0; margin: 0 0 5px; }
+    .flyer-cta p { font-size: 14px; margin: 0; }
+    .homepage-link {
+      color: var(--cp-nuevo-ink);
+      display: inline-block;
+      font-size: 13px;
+      font-weight: 800;
+      margin-top: 7px;
+    }
+    .cta-link {
+      background: var(--cp-nuevo-red);
+      border-radius: 0.625rem;
+      color: var(--cp-nuevo-white);
+      display: inline-block;
+      font-size: 15px;
+      font-weight: 800;
+      padding: 13px 19px;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .mail-window {
+      background: var(--cp-bg-elevated);
+      border: 1px solid var(--cp-border);
+      border-radius: 16px;
+      box-shadow: var(--cp-shadow);
+      margin: 0 auto;
+      max-width: 760px;
+      overflow: hidden;
+    }
+    .mail-meta { border-bottom: 1px solid var(--cp-border); padding: 18px 24px; }
+    .mail-row { display: grid; font-size: 14px; grid-template-columns: 74px 1fr; padding: 4px 0; }
+    .mail-row span { color: var(--cp-text-muted); }
+    .email-canvas { background: var(--cp-nuevo-green-soft); padding: 32px 16px; }
+    .email {
+      background: var(--cp-nuevo-white);
+      border: 1px solid var(--cp-border);
+      border-top: 8px solid var(--cp-nuevo-amber);
+      color: var(--cp-nuevo-ink);
+      margin: 0 auto;
+      max-width: 600px;
+    }
+    .email-logo { padding: 30px 40px 22px; width: 100%; }
+    .email-logo img { display: block; height: auto; max-width: 250px; width: 50%; }
+    .email-body { padding: 10px 40px 38px; }
+    .email-body h1 { font-size: 34px; line-height: 1.12; }
+    .email-body p { color: var(--cp-text-muted); font-size: 16px; line-height: 1.55; }
+    .email-program {
+      border-top: 1px solid var(--cp-border);
+      display: grid;
+      gap: 16px;
+      grid-template-columns: 28px 1fr;
+      padding: 15px 0;
+    }
+    .email-program strong { color: var(--cp-nuevo-red); }
+    .email-program:nth-of-type(2) strong { color: var(--cp-nuevo-cyan); }
+    .email-program h2 { font-size: 17px; margin: 0 0 3px; }
+    .email-program p { font-size: 14px; margin: 0; }
+    .email-button {
+      background: var(--cp-nuevo-red);
+      border-radius: 0.625rem;
+      color: var(--cp-nuevo-white);
+      display: inline-block;
+      font-weight: 800;
+      margin: 18px 0 12px;
+      padding: 14px 20px;
+      text-decoration: none;
+    }
+    .email-proof {
+      background: var(--cp-nuevo-amber-soft);
+      border-left: 4px solid var(--cp-nuevo-amber);
+      margin: 18px 0 8px;
+      padding: 14px 16px;
+    }
+    .email-proof p { font-size: 14px; margin: 0; }
+    .flyer-reference {
+      border-bottom: 1px solid var(--cp-border);
+      border-top: 1px solid var(--cp-border);
+      margin: 20px 0 4px;
+      padding: 17px 0;
+    }
+    .flyer-reference strong { display: block; font-size: 15px; }
+    .flyer-reference p { font-size: 14px; margin: 5px 0 8px; }
+    .flyer-link { color: var(--cp-link); font-size: 14px; font-weight: 700; }
+    .email-footer { background: var(--cp-nuevo-amber); border-top: 1px solid var(--cp-border); color: var(--cp-nuevo-ink); font-size: 12px; line-height: 1.5; padding: 22px 40px; }
+    .email-footer a { color: var(--cp-nuevo-ink); font-weight: 700; }
+
+    @media (max-width: 700px) {
+      .review-bar { align-items: flex-start; flex-direction: column; }
+      .preview-stage { padding: 16px 8px 40px; }
+      .flyer { min-height: 0; }
+      .flyer-header { padding: 34px 24px 16px; }
+      .brand-logo { width: 58%; }
+      .flyer-hero { gap: 20px; grid-template-columns: 1fr; padding: 16px 24px 26px; }
+      h1 { font-size: 38px; }
+      .mascot-frame { min-height: 210px; }
+      .programs { grid-template-columns: 1fr; margin: 0 24px; }
+      .program, .program + .program { border-left: 0; padding: 18px 0; }
+      .program + .program { border-top: 1px solid var(--cp-border); }
+      .impact { padding: 28px 24px 18px; }
+      .impact-intro { align-items: flex-start; flex-direction: column; gap: 6px; }
+      .impact-metrics { grid-template-columns: 1fr 1fr; }
+      .flyer-cta { grid-template-columns: 1fr; padding: 26px 24px; }
+      .email-logo, .email-body, .email-footer { padding-left: 24px; padding-right: 24px; }
+      .email-body h1 { font-size: 30px; }
+    }
+
+    @media print {
+      @page { margin: 0; size: letter; }
+      body { background: var(--cp-surface); }
+      .review-bar { display: none; }
+      .preview-stage { padding: 0; }
+      .preview-panel[hidden] { display: none; }
+      .flyer { box-shadow: none; height: 11in; max-width: none; min-height: 11in; width: 8.5in; }
+      #email-panel:not([hidden]) .mail-window { border: 0; box-shadow: none; }
+    }
+  </style>
+</head>
+<body>
+  <header class="review-bar">
+    <div class="review-title">Outreach concept <span>Local review draft</span></div>
+    <div class="review-actions" role="tablist" aria-label="Preview format">
+      <button class="view-button" role="tab" aria-selected="true" aria-controls="flyer-panel" data-view="flyer">Flyer</button>
+      <button class="view-button" role="tab" aria-selected="false" aria-controls="email-panel" data-view="email">Email</button>
+      <button class="print-button" type="button" onclick="window.print()">Print preview</button>
+    </div>
+  </header>
+
+  <main class="preview-stage">
+    <section class="preview-panel" id="flyer-panel" role="tabpanel">
+      <article class="flyer">
+        <header class="flyer-header">
+          <a href="https://nuevofoundation.org/" aria-label="Visit the Nuevo Foundation homepage">
+            <img class="brand-logo" src="assets/nuevo-foundation-logo.svg" alt="Nuevo Foundation">
+          </a>
+          <div class="nonprofit-label">Seattle-based 501(c)(3)<br>STEM nonprofit</div>
+        </header>
+
+        <section class="flyer-hero">
+          <div>
+            <p class="eyebrow">For families, schools, and community groups</p>
+            <h1>Bring an inspiring STEM experience to your students.</h1>
+            <p class="hero-copy">We help young people become curious, confident, and courageous through hands-on coding, relatable role models, and engaging STEM experiences.</p>
+          </div>
+          <div class="mascot-frame">
+            <img src="assets/nuevo-foundation-mascot.jpg" alt="Nuevo Foundation mascot holding a laptop">
+          </div>
+        </section>
+
+        <section class="programs" aria-label="Programs">
+          <article class="program">
+            <div class="program-number">01</div>
+            <h2>Coding workshops</h2>
+            <p>Guided, hands-on activities help students build technology skills and confidence.</p>
+          </article>
+          <article class="program">
+            <div class="program-number">02</div>
+            <h2>Virtual sessions</h2>
+            <p>Flexible online experiences connect learners with STEM from wherever they are.</p>
+          </article>
+          <article class="program">
+            <div class="program-number">03</div>
+            <h2>STEM speakers</h2>
+            <p>Real stories from professionals help students see a place for themselves in STEM.</p>
+          </article>
+        </section>
+
+        <section class="impact">
+          <div class="impact-intro">
+            <h2>Our impact</h2>
+            <p>Expanding access to welcoming, relevant STEM experiences worldwide.</p>
+          </div>
+          <div class="impact-metrics">
+            <div class="metric"><strong>23,737</strong><span>students reached</span></div>
+            <div class="metric"><strong>33</strong><span>countries</span></div>
+            <div class="metric"><strong>6</strong><span>territories</span></div>
+            <div class="metric"><strong>7</strong><span>languages</span></div>
+            <div class="metric"><strong>85%</strong><span>more interested in STEM</span></div>
+            <div class="metric"><strong>90%</strong><span>believed they learned to code</span></div>
+          </div>
+        </section>
+
+        <footer class="flyer-cta">
+          <div>
+            <h2>Start a conversation.</h2>
+            <p>Tell us about your learners and the experience you have in mind.</p>
+            <a class="homepage-link" href="https://nuevofoundation.org/">Visit nuevofoundation.org</a>
+          </div>
+          <a class="cta-link" href="mailto:contact@nuevofoundation.org?subject=Request%20a%20Nuevo%20Foundation%20engagement">Request an engagement</a>
+        </footer>
+      </article>
+    </section>
+
+    <section class="preview-panel" id="email-panel" role="tabpanel" hidden>
+      <div class="mail-window">
+        <div class="mail-meta">
+          <div class="mail-row"><span>To</span><strong>Dr. Elena Martinez · Lakeview School District</strong></div>
+          <div class="mail-row"><span>Subject</span><strong>Bring an inspiring STEM experience to your students</strong></div>
+          <div class="mail-row"><span>Preheader</span><div>Hands-on coding, STEM role models, and flexible learning experiences.</div></div>
+        </div>
+        <div class="email-canvas">
+          <article class="email">
+            <header class="email-logo">
+              <a href="https://nuevofoundation.org/" aria-label="Visit the Nuevo Foundation homepage">
+                <img src="assets/nuevo-foundation-logo.svg" alt="Nuevo Foundation">
+              </a>
+            </header>
+            <div class="email-body">
+              <p>Hi Dr. Martinez,</p>
+              <p>I saw Lakeview School District’s focus on career-connected learning, and thought Nuevo Foundation’s hands-on coding workshops and STEM speaker sessions could support that work.</p>
+              <p class="eyebrow">Inspire the next generation</p>
+              <h1>Give your students a welcoming way into STEM.</h1>
+              <p>Nuevo Foundation helps young people become curious, confident, and courageous through practical coding experiences and relatable STEM role models.</p>
+
+              <div class="email-program">
+                <strong>01</strong>
+                <div><h2>Learn by building</h2><p>Hands-on coding workshops turn curiosity into practical experience.</p></div>
+              </div>
+              <div class="email-program">
+                <strong>02</strong>
+                <div><h2>Meet someone relatable</h2><p>Virtual sessions and speakers share real paths into STEM careers.</p></div>
+              </div>
+              <div class="email-program">
+                <strong>03</strong>
+                <div><h2>Find the right format</h2><p>We work with families, educators, schools, and community groups.</p></div>
+              </div>
+
+              <div class="email-proof">
+                <p><strong>Our impact:</strong> 23,737 students reached across 33 countries, 6 territories, and 7 languages.</p>
+                <p>After participating, 85% reported greater interest in STEM and 90% believed they learned to code.</p>
+              </div>
+              <div class="flyer-reference">
+                <strong>Share the one-page overview</strong>
+                <p>The flyer brings the programs, impact, and next step together for families, colleagues, or school leaders.</p>
+                <a class="flyer-link" href="#flyer-panel" data-open-flyer>View the flyer</a>
+              </div>
+              <a class="email-button" href="mailto:contact@nuevofoundation.org?subject=Request%20a%20Nuevo%20Foundation%20engagement">Request an engagement</a>
+              <p>Looking for something students can try today? Explore our <a href="https://workshops.nuevofoundation.org/">free online workshop library</a>.</p>
+            </div>
+            <footer class="email-footer">
+              Nuevo Foundation is a Seattle-based 501(c)(3) nonprofit.<br>
+              <a href="https://nuevofoundation.org/">Visit the Nuevo Foundation homepage</a> · <a href="mailto:contact@nuevofoundation.org">contact@nuevofoundation.org</a>
+            </footer>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const buttons = document.querySelectorAll("[data-view]");
+    const panels = document.querySelectorAll(".preview-panel");
+
+    buttons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const selectedView = button.dataset.view;
+        buttons.forEach((candidate) => {
+          candidate.setAttribute("aria-selected", String(candidate === button));
+        });
+        panels.forEach((panel) => {
+          panel.hidden = panel.id !== `${selectedView}-panel`;
+        });
+      });
+    });
+
+    document.querySelector("[data-open-flyer]").addEventListener("click", (event) => {
+      event.preventDefault();
+      document.querySelector('[data-view="flyer"]').click();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  </script>
+</body>
+</html>
