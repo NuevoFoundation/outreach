@@ -101,12 +101,21 @@ display **View the flyer** as a hyperlink to that public address. Plain-text
 copying and `mailto` retain the full public flyer address instead. An empty
 configuration never creates a fake or local-only sharing link.
 
+### Reviewer note: production hosting
+
+Both the parent-outreach website and the flyer should be hosted on Nuevo
+Foundation's official website. Once the flyer is hosted at a verified public
+address, add that address to the email as a link. The flyer cannot be attached
+automatically through **Open my email app**; parents must download it and attach
+it manually in their email application.
+
 Before public launch:
 
 1. Have the outreach owner review the parent email wording and the original
    flyer's claims. New email copy does not repeat its impact metrics.
-2. Obtain approval for a hosting destination and publish the static `site/`
-   files over HTTPS. No deployment workflow is configured by this change.
+2. Obtain publishing approval and host both the static `site/` website and the
+   flyer on Nuevo Foundation's official website over HTTPS. No deployment
+   workflow is configured by this change.
 3. Verify that the hosted `flyer.html` page opens without signing in, that its
    image loads, and that its engagement link opens the intended form. The form
    was supplied by the owner. Its title and public metadata have been checked;
