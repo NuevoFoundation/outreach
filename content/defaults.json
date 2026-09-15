@@ -1,0 +1,11 @@
+{
+  "language": "en",
+  "organization": {
+    "name": "Nuevo Foundation",
+    "website": "https://nuevofoundation.org",
+    "email": "hello@nuevofoundation.org",
+    "address": "Nuevo Foundation, Minneapolis, MN",
+    "unsubscribeUrl": "{{unsubscribe_url}}"
+  },
+  "signature": "The Nuevo Foundation Team"
+}
