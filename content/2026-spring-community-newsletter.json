@@ -1,0 +1,41 @@
+{
+  "template": "newsletter",
+  "subject": "Nuevo Foundation: Spring coding clubs, student spotlights, and how to help",
+  "preheader": "See what our students built this season and join us at the spring showcase.",
+  "title": "Nuevo Foundation Community Newsletter",
+  "edition": "Spring 2026 edition",
+  "greetingName": "friends",
+  "intro": [
+    "Thank you for being part of the Nuevo Foundation community. This season our volunteers ran coding clubs at eleven schools and welcomed more than 300 students to their first line of code."
+  ],
+  "stories": [
+    {
+      "heading": "Students built their first games",
+      "body": "Fourth and fifth graders at Lincoln Elementary spent six weeks learning loops and conditionals, and finished the club by publishing a game they designed themselves.",
+      "linkUrl": "https://nuevofoundation.org/stories",
+      "linkText": "Read the full story"
+    },
+    {
+      "heading": "Volunteers wanted for the fall season",
+      "body": "No teaching experience is required. We provide the curriculum, the training, and a partner volunteer for every classroom.",
+      "linkUrl": "https://nuevofoundation.org/volunteer",
+      "linkText": "Sign up to volunteer"
+    }
+  ],
+  "events": [
+    {
+      "name": "Spring Student Showcase",
+      "date": "Saturday, April 18",
+      "location": "Minneapolis Central Library"
+    },
+    {
+      "name": "Volunteer Orientation",
+      "date": "Tuesday, May 5",
+      "location": "Online"
+    }
+  ],
+  "callToAction": {
+    "text": "Support our programs",
+    "url": "https://nuevofoundation.org/donate"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "template": "parent-update",
+  "subject": "Your student's coding club starts next week",
+  "preheader": "Everything you need to know before the first session.",
+  "title": "Coding club starts next week",
+  "greetingName": "families",
+  "intro": [
+    "We are excited to welcome your student to the Nuevo Foundation coding club at Lincoln Elementary. Below are the details for the first session.",
+    "Everything is free, and no previous computer experience is needed."
+  ],
+  "details": [
+    { "label": "First session", "value": "Tuesday, September 22" },
+    { "label": "Time", "value": "3:30 pm to 4:30 pm" },
+    { "label": "Location", "value": "Lincoln Elementary, computer lab (room 112)" },
+    { "label": "Pick up", "value": "Main entrance at 4:30 pm" }
+  ],
+  "whatToBring": [
+    "A signed permission slip, if you have not returned one yet",
+    "A snack, if your student would like one",
+    "Curiosity, questions, and project ideas"
+  ],
+  "callToAction": {
+    "text": "Confirm your student's spot",
+    "url": "https://nuevofoundation.org/families"
+  },
+  "spanishVersion": "¿Necesita esta información en español? Responda a este correo y con gusto se la enviamos.",
+  "signature": "Your Nuevo Foundation club leaders"
+}

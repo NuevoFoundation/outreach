@@ -1,0 +1,37 @@
+<h1 style="margin:0 0 16px 0; font-size:24px; color:#0b5d8a;">{{ title }}</h1>
+
+<p style="margin:0 0 16px 0; font-size:16px; line-height:24px;">Dear {{ greetingName }},</p>
+{{# intro }}
+<p style="margin:0 0 16px 0; font-size:16px; line-height:24px;">{{ . }}</p>
+{{/ intro }}
+
+{{# program.name }}
+<h2 style="margin:24px 0 8px 0; font-size:18px; color:#1f2933;">{{ program.name }}</h2>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="font-size:16px; line-height:24px; margin:0 0 16px 0;">
+  <tr><td style="padding-right:12px;"><strong>Grades</strong></td><td>{{ program.grades }}</td></tr>
+  <tr><td style="padding-right:12px;"><strong>Format</strong></td><td>{{ program.format }}</td></tr>
+  <tr><td style="padding-right:12px;"><strong>Duration</strong></td><td>{{ program.duration }}</td></tr>
+  <tr><td style="padding-right:12px;"><strong>Cost</strong></td><td>{{ program.cost }}</td></tr>
+</table>
+{{/ program.name }}
+
+{{# highlights.length }}
+<h2 style="margin:24px 0 8px 0; font-size:18px; color:#1f2933;">What students take away</h2>
+<ul style="margin:0 0 16px 0; padding-left:20px; font-size:16px; line-height:24px;">
+  {{# highlights }}
+  <li>{{ . }}</li>
+  {{/ highlights }}
+</ul>
+{{/ highlights.length }}
+
+{{# nextSteps }}
+<p style="margin:0 0 16px 0; font-size:16px; line-height:24px;">{{ nextSteps }}</p>
+{{/ nextSteps }}
+
+{{# callToAction }}
+<p style="margin:24px 0 0 0; font-size:16px; line-height:24px;">
+  <a href="{{ callToAction.url }}" style="background-color:#0b5d8a; color:#ffffff; padding:12px 20px; border-radius:4px; text-decoration:none; display:inline-block;">{{ callToAction.text }}</a>
+</p>
+{{/ callToAction }}
+
+<p style="margin:24px 0 0 0; font-size:16px; line-height:24px;">Thank you for partnering with us,<br />{{ signature }}</p>

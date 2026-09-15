@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="{{ language }}">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{ subject }}</title>
+  </head>
+  <body style="margin:0; padding:0; background-color:#f4f6f8; font-family:Helvetica, Arial, sans-serif; color:#1f2933;">
+    <div style="display:none; max-height:0; overflow:hidden; opacity:0;">{{ preheader }}</div>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f4f6f8;">
+      <tr>
+        <td align="center" style="padding:24px 12px;">
+          <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="width:100%; max-width:600px; background-color:#ffffff; border-radius:8px;">
+            <tr>
+              <td style="padding:24px; background-color:#0b5d8a; border-radius:8px 8px 0 0;">
+                <a href="{{ organization.website }}" style="color:#ffffff; font-size:20px; font-weight:bold; text-decoration:none;">{{ organization.name }}</a>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:24px;">
+                {{{ body }}}
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:16px 24px 24px 24px; border-top:1px solid #e4e7eb; font-size:12px; color:#616e7c;">
+                <p style="margin:0 0 8px 0;">{{ organization.name }} &middot; {{ organization.address }}</p>
+                <p style="margin:0 0 8px 0;">Questions? Email <a href="mailto:{{ organization.email }}" style="color:#0b5d8a;">{{ organization.email }}</a>.</p>
+                <p style="margin:0;"><a href="{{ organization.unsubscribeUrl }}" style="color:#616e7c;">Unsubscribe</a> from these messages.</p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

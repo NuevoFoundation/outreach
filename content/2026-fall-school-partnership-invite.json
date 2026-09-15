@@ -1,0 +1,29 @@
+{
+  "template": "school-outreach",
+  "subject": "Free coding clubs for your students this fall",
+  "preheader": "Nuevo Foundation brings volunteer-led coding clubs to your school at no cost.",
+  "title": "Bring a free coding club to your school",
+  "greetingName": "Principal Rivera",
+  "intro": [
+    "My name is Ana and I coordinate school partnerships for Nuevo Foundation, a nonprofit that brings hands-on computer science to students who do not yet have access to it.",
+    "We are scheduling fall clubs now and would love to reserve a spot for your students."
+  ],
+  "program": {
+    "name": "After-school coding club",
+    "grades": "Grades 3-8",
+    "format": "Two volunteers per classroom, school provides the room and laptops",
+    "duration": "One hour per week for eight weeks",
+    "cost": "Free for the school and for families"
+  },
+  "highlights": [
+    "An introduction to programming through games and storytelling projects",
+    "A finished project each student can share with their family",
+    "Role models from local technology companies, including bilingual volunteers"
+  ],
+  "nextSteps": "If this sounds like a fit, reply with two or three times that work for a 20 minute call and we will handle the scheduling and volunteer background checks.",
+  "callToAction": {
+    "text": "See the program overview",
+    "url": "https://nuevofoundation.org/schools"
+  },
+  "signature": "Ana Torres, School Partnerships"
+}
