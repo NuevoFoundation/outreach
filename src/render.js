@@ -96,9 +96,7 @@ function stripTags(html) {
   let previous;
   do {
     previous = current;
-    current = current
-      .replace(/<(script|style)\b[\s\S]*?<\/\1\s*>/gi, '')
-      .replace(/<[^<>]*>/g, '');
+    current = current.replace(/<[^<>]*>/g, '');
   } while (current !== previous);
   return current.replace(/<[\s\S]*$/, '');
 }

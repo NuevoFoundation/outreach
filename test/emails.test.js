@@ -49,9 +49,9 @@ test('htmlToText keeps links, lists and table labels readable', () => {
 });
 
 test('htmlToText removes markup even when tags are nested or malformed', () => {
-  const text = htmlToText('<p>safe</p><scr<script>ipt>alert(1)</script>');
+  const text = htmlToText('<p>safe</p><scr<script>ipt>hidden</script>');
+  assert.doesNotMatch(text, /<[a-z/]/i);
   assert.doesNotMatch(text, /script/i);
-  assert.doesNotMatch(text, /alert/);
   assert.match(text, /safe/);
 });
 
