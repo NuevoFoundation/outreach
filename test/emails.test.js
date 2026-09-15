@@ -48,6 +48,13 @@ test('htmlToText keeps links, lists and table labels readable', () => {
   assert.doesNotMatch(text, /</);
 });
 
+test('htmlToText removes markup even when tags are nested or malformed', () => {
+  const text = htmlToText('<p>safe</p><scr<script>ipt>alert(1)</script>');
+  assert.doesNotMatch(text, /script/i);
+  assert.doesNotMatch(text, /alert/);
+  assert.match(text, /safe/);
+});
+
 test('every email in content/ builds into HTML and plain text', async () => {
   const names = await listEmails();
   assert.ok(names.length > 0, 'expected at least one email in content/');

@@ -88,20 +88,36 @@ export function render(template, data = {}) {
 }
 
 /**
+ * Removes every markup element, repeating until the result no longer changes so
+ * that no tag can survive by hiding inside another one.
+ */
+function stripTags(html) {
+  let current = html;
+  let previous;
+  do {
+    previous = current;
+    current = current
+      .replace(/<(script|style)\b[\s\S]*?<\/\1\s*>/gi, '')
+      .replace(/<[^<>]*>/g, '');
+  } while (current !== previous);
+  return current.replace(/<[\s\S]*$/, '');
+}
+
+/**
  * Builds the plain-text alternative of an email from its HTML body so both
  * versions always stay in sync.
  */
 export function htmlToText(html) {
-  return html
-    .replace(/<(script|style)[\s\S]*?<\/\1>/gi, '')
-    .replace(/<a\b[^>]*href="([^"]*)"[^>]*>([\s\S]*?)<\/a>/gi, (_m, href, text) => {
-      const label = text.replace(/<[^>]+>/g, '').trim();
-      return label && label !== href ? `${label} (${href})` : href;
-    })
-    .replace(/<li\b[^>]*>/gi, '\n- ')
-    .replace(/<\/td>\s*<td\b[^>]*>/gi, ': ')
-    .replace(/<(br|\/p|\/h[1-6]|\/tr|\/div|hr)\b[^>]*>/gi, '\n')
-    .replace(/<[^>]+>/g, '')
+  return stripTags(
+    html
+      .replace(/<a\b[^<>]*href="([^"]*)"[^<>]*>([\s\S]*?)<\/a\s*>/gi, (_m, href, text) => {
+        const label = stripTags(text).trim();
+        return label && label !== href ? `${label} (${href})` : href;
+      })
+      .replace(/<li\b[^<>]*>/gi, '\n- ')
+      .replace(/<\/td>\s*<td\b[^<>]*>/gi, ': ')
+      .replace(/<(br|\/p|\/h[1-6]|\/tr|\/div|hr)\b[^<>]*>/gi, '\n')
+  )
     .replace(/&nbsp;/gi, ' ')
     .replace(/&mdash;/gi, '\u2014')
     .replace(/&middot;/gi, '\u00b7')
