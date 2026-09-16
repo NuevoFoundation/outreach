@@ -193,7 +193,7 @@ test("a verified hosted flyer becomes a clickable preview and copied-email link"
 });
 
 test("email preview and flyer buttons consistently use the verified short link", async () => {
-  assert.equal(engagementUrl, "https://angelica-salazar-code.github.io/parent-school-outreach/form.html");
+  assert.equal(engagementUrl, "https://nuevofoundation.github.io/outreach/form.html");
   assert.ok(engagementUrl.length < engagementDestinationUrl.length);
   const draft = createEmail(answers);
   assert.ok(draft.body.includes(engagementUrl));
@@ -249,7 +249,7 @@ test("first-party form link redirects to the exact Microsoft Form with a manual 
 });
 
 test("flyer hosted on the same site as the short link remains valid", () => {
-  const flyer = "https://angelica-salazar-code.github.io/parent-school-outreach/flyer.html";
+  const flyer = "https://nuevofoundation.github.io/outreach/flyer.html";
   assert.equal(validateFlyerUrl(flyer), flyer);
   assert.ok(createEmail(answers, flyer).body.includes(flyer));
   assert.throws(() => validateFlyerUrl(engagementUrl));

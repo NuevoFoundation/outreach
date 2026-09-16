@@ -67,7 +67,7 @@ node --test .\site\test\email.test.mjs
 - The separate Microsoft interest form opens only when its link is selected.
   No parent answers are added to that address. The form has its own data handling.
 - Engagement buttons open Microsoft Forms directly. The email's shorter link
-  uses the personal Pages site's `form.html`, which opens the same Microsoft
+  uses the Nuevo Foundation Pages site's `form.html`, which opens the same Microsoft
   Form and provides a manual fallback. No answers are passed to that page.
 - The page does not request children's names. Browser extensions, browser/cloud
   spellchecking settings, operating-system services, and the email application
@@ -82,7 +82,7 @@ optional image download. Its red engagement button has an accessible overlay.
 wording, official logo and mascot, and shared Nuevo Foundation color palette.
 It opens directly without a screenshot wrapper, tabs, or a download step.
 Its engagement button opens the original Microsoft Forms destination directly.
-Email drafts use `https://angelica-salazar-code.github.io/parent-school-outreach/form.html`
+Email drafts use `https://nuevofoundation.github.io/outreach/form.html`
 as a shorter link to the same form. TinyURL was removed after real browser
 navigation began showing its deprecated-API interstitial. `site/config.js`
 retains the full destination as `engagementDestinationUrl` for future checks.
@@ -95,8 +95,8 @@ flyer** beside **Open my email app**. The separate image download remains
 optional for saving a copy; no download is required to share the flyer.
 
 The verified public flyer address is
-`https://angelica-salazar-code.github.io/parent-school-outreach/flyer.html`.
-`verifiedFlyerUrl` configures this personal GitHub Pages address. The email
+`https://nuevofoundation.github.io/outreach/flyer.html`.
+`verifiedFlyerUrl` configures this Nuevo Foundation GitHub Pages address. The email
 preview and formatted clipboard display **View the flyer** as a hyperlink.
 Plain-text copying and `mailto` retain the full public address instead.
 An empty configuration still omits the flyer link and explains why rather
@@ -118,11 +118,20 @@ the preview and is the address used in parent emails. The original campaign
 files are unchanged. The flyer keeps its white/yellow/red branding even on
 devices set to dark mode; the parent builder still supports both themes.
 
+### Hosting
+
+GitHub Actions publishes the `site/` folder to GitHub Pages on every push to
+`main` via [`.github/workflows/deploy-pages.yml`](.github/workflows/deploy-pages.yml).
+The live site is https://nuevofoundation.github.io/outreach/ — the parent builder
+at `/outreach/`, the short form link at `/outreach/form.html`, and the flyer at
+`/outreach/flyer.html`. Hosting on Nuevo Foundation's official website remains the
+production goal (see below).
+
 ### Reviewer note: production hosting
 
 Both the parent-outreach website and the flyer should be hosted on Nuevo
 Foundation's official website for the eventual production launch. The current
-personal GitHub Pages deployment already supplies a working flyer link.
+Nuevo Foundation GitHub Pages deployment already supplies a working flyer link.
 Parent emails share that link, not an attachment. Automatic file attachment
 through **Open my email app** is not supported.
 
@@ -131,8 +140,9 @@ Before public launch:
 1. Have the outreach owner review the parent email wording and the original
    flyer's claims. New email copy does not repeat its impact metrics.
 2. Obtain publishing approval and host both the static `site/` website and the
-   flyer on Nuevo Foundation's official website over HTTPS. No deployment
-   workflow is configured by this change.
+   flyer on Nuevo Foundation's official website over HTTPS. An interim GitHub
+   Actions workflow (`.github/workflows/deploy-pages.yml`) publishes the `site/`
+   folder to https://nuevofoundation.github.io/outreach/ until then.
 3. Verify that the hosted `flyer.html` page opens without signing in, that its
    logo and mascot load, and that its engagement link opens the intended form. The form
    was supplied by the owner. Its title and public metadata have been checked;
