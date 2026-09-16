@@ -235,3 +235,20 @@ test("impact numbers come from one file, so a change lands in every language", a
   const source = await readFile(new URL("../tools/build-flyers.mjs", import.meta.url), "utf8");
   assert.ok(!/23[,. ]?737/.test(source), "build-flyers.mjs must not restate the student figure");
 });
+
+test("the engagement form address is defined only in config.js", async () => {
+  const source = await readFile(new URL("../tools/build-flyers.mjs", import.meta.url), "utf8");
+  assert.ok(
+    !/forms\.cloud\.microsoft\/Pages/.test(source),
+    "build-flyers.mjs must take the form address from config.js, not restate it",
+  );
+  // Every page that offers the form must point at the one configured address.
+  for (const file of ["flyer.html", "flyer-es.html", "flyer-fr.html", "flyer-pt-br.html", "form.html"]) {
+    const html = await readSite(file);
+    const addresses = [...html.matchAll(/https:\/\/forms\.cloud\.microsoft\/[^"\s>]+/g)].map((match) => match[0]);
+    assert.ok(addresses.length > 0, `${file} links the form`);
+    for (const address of addresses) {
+      assert.equal(address, engagementDestinationUrl, `${file} uses the configured form address`);
+    }
+  }
+});

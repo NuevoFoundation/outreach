@@ -2,11 +2,13 @@
 // each translation keeps identical layout, branding, and assets.
 // Run: node .\site\tools\build-flyers.mjs
 import { readFile, writeFile } from "node:fs/promises";
+import { engagementDestinationUrl } from "../config.js";
 import { localizedMetrics } from "../impact.js";
 
 const siteDir = new URL("../", import.meta.url);
-const engagementUrl =
-  "https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR23fuGVglxBBl1KGeP0580dUQ1hUMVFQMjlFRlhQMFlKSTVGWEhBVUYxQSQlQCN0PWcu";
+// The flyer is a standalone page, so its button goes straight to the form.
+// The address itself lives only in site/config.js.
+const engagementUrl = engagementDestinationUrl;
 
 // English wording is the approved campaign copy. The impact figures live in
 // site/impact.js so a number is only ever updated in one place.
@@ -238,19 +240,20 @@ const invokedDirectly = process.argv[1] && import.meta.url === new URL(`file://$
 
 if (invokedDirectly) {
   // The English flyer's design and wording are already approved, so confirm the
-  // template still reproduces it before overwriting anything. The impact figures
-  // are the one part that is meant to change, so they are blanked on both sides:
-  // updating a number in impact.js is allowed, while any other drift still fails.
+  // template still reproduces it before overwriting anything. Two things are
+  // meant to change and are blanked on both sides: the impact figures in
+  // impact.js and the form address in config.js. Any other drift still fails.
   const existingEnglish = await readFile(new URL("flyer.html", siteDir), "utf8");
   const eol = existingEnglish.includes("\r\n") ? "\r\n" : "\n";
   const applyEol = (text) => (eol === "\n" ? text : text.replace(/\n/g, "\r\n"));
   const normalize = (text) =>
     text
       .replace(/^ {6}<nav class="flyer-languages"[\s\S]*?<\/nav>\r?\n/m, "")
-      .replace(/<dd>[^<]*<\/dd>/g, "<dd>#</dd>");
+      .replace(/<dd>[^<]*<\/dd>/g, "<dd>#</dd>")
+      .replace(/href="https:\/\/forms\.cloud\.microsoft\/[^"]*"/g, 'href="#form"');
   if (applyEol(normalize(renderFlyer("en"))) !== normalize(existingEnglish)) {
     throw new Error(
-      "The flyer template no longer reproduces the approved English flyer. Impact figures in impact.js may change freely; other wording and layout may not.",
+      "The flyer template no longer reproduces the approved English flyer. Impact figures in impact.js and the form address in config.js may change freely; other wording and layout may not.",
     );
   }
   for (const code of Object.keys(flyerContent)) {
