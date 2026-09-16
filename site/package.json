@@ -6,6 +6,7 @@
     "node": ">=18"
   },
   "scripts": {
-    "test": "node --test test/email.test.mjs"
+    "test": "node --test test/email.test.mjs test/i18n.test.mjs",
+    "build:flyers": "node tools/build-flyers.mjs"
   }
 }
