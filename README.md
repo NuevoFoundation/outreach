@@ -78,7 +78,7 @@ node --test .\site\test\email.test.mjs
 The user-supplied original flyer is preserved at
 `site/assets/nuevo-foundation-flyer.png`. Its red engagement button is covered
 by an accessible link on both the builder and `site/flyer.html`; a separate,
-visible engagement link is also available below the image. All
+visible engagement link is also available on the standalone flyer page only. All
 engagement buttons use the original Microsoft Forms destination directly.
 Email drafts use `https://angelica-salazar-code.github.io/parent-school-outreach/form.html`
 as a shorter link to the same form. TinyURL was removed after real browser

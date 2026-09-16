@@ -202,7 +202,7 @@ test("email preview and flyer buttons consistently use the verified short link",
   for (const filename of ["index.html", "flyer.html"]) {
     const html = await readFile(new URL(`../${filename}`, import.meta.url), "utf8");
     const links = [...html.matchAll(/href="(https:\/\/[^"]+)"/g)].map((match) => match[1]);
-    assert.equal(links.length, 2);
+    assert.equal(links.length, filename === "index.html" ? 1 : 2);
     for (const link of links) assert.equal(link, engagementDestinationUrl);
     assert.ok(!html.includes("tinyurl.com"));
     assert.ok(html.includes("connect-src 'none'"));
@@ -210,6 +210,12 @@ test("email preview and flyer buttons consistently use the verified short link",
     assert.ok(html.includes('class="flyer-hotspot"'));
     assert.ok(html.includes('download="Nuevo-Foundation-flyer.png"'));
   }
+});
+
+test("the parent page omits the extra engagement block while keeping the flyer link", async () => {
+  const html = await readFile(new URL("../index.html", import.meta.url), "utf8");
+  assert.doesNotMatch(html, /class="button button-engagement"|A separate form run by Nuevo Foundation/);
+  assert.match(html, /class="flyer-hotspot"/);
 });
 
 test("first-party form link redirects to the exact Microsoft Form with a manual fallback", async () => {
