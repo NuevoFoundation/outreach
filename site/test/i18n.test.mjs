@@ -4,6 +4,7 @@ import { readFile } from "node:fs/promises";
 import { engagementDestinationUrl, engagementUrl } from "../config.js";
 import { createEmail, createMailto, formattedMessage, localizeFlyerUrl, messageParts, validateAnswers } from "../email.js";
 import { defaultLanguage, languageCodes, languages, pack, resolveLanguage, t, translations } from "../i18n.js";
+import { formatMetric, impactMetrics, localizedMetrics, metricIds } from "../impact.js";
 import { flyerContent, flyerLanguages } from "../tools/build-flyers.mjs";
 
 const answers = { school: "Maple Grove Elementary", grade: "elementary", selectedInterests: ["coding", "virtual", "speakers"] };
@@ -164,9 +165,10 @@ test("a translated flyer exists for every language and stays script-free", async
     assert.doesNotMatch(html, /<script|download=|nuevo-foundation-flyer\.png/i);
     assert.ok(html.includes("connect-src 'none'"));
     assert.ok(html.includes(engagementDestinationUrl), `${code} flyer links the real form`);
-    // Numbers are Nuevo Foundation's published figures and are never restated.
-    for (const [, value] of content.metrics) assert.ok(html.includes(value));
-    assert.equal(content.metrics.length, 6);
+    // Numbers come from site/impact.js, so each flyer must render that shared set.
+    const renderedMetrics = localizedMetrics(code, content.metricLabels);
+    for (const [, value] of renderedMetrics) assert.ok(html.includes(value));
+    assert.equal(renderedMetrics.length, 6);
     for (const other of languageCodes) {
       assert.ok(html.includes(`href="./${flyerContent[other].file}"`), `${code} flyer links to ${other}`);
     }
@@ -202,4 +204,34 @@ test("Spanish and French address the parent informally, never with usted or vous
       assert.ok(!pattern.test(line), `${code} flyer string keeps a formal register: ${line}`);
     }
   }
+});
+
+test("impact numbers come from one file, so a change lands in every language", async () => {
+  // Raise the headline figure the way a future editor would: edit impact.js only.
+  const changed = impactMetrics.map((metric) =>
+    metric.id === "studentsReached" ? { ...metric, value: 24500 } : metric,
+  );
+  const expected = { en: "24,500", es: "24,500", fr: "24 500", "pt-br": "24.500" };
+  for (const code of Object.keys(flyerContent)) {
+    const metric = changed.find((item) => item.id === "studentsReached");
+    assert.equal(formatMetric(metric, code), expected[code], `${code} formats the shared figure`);
+  }
+
+  // Today's published flyers must all be rendering the same underlying numbers.
+  for (const code of Object.keys(flyerContent)) {
+    const labels = flyerContent[code].metricLabels;
+    assert.deepEqual(Object.keys(labels).sort(), [...metricIds].sort(), `${code} labels every metric`);
+    const rendered = localizedMetrics(code, labels);
+    assert.equal(rendered.length, impactMetrics.length);
+    for (const [index, [label, value]] of rendered.entries()) {
+      assert.ok(label.length > 0);
+      assert.match(value, /\d/, `${code} renders a figure for ${impactMetrics[index].id}`);
+      const html = await readSite(flyerContent[code].file);
+      assert.ok(html.includes(`<dt>${label}</dt><dd>${value}</dd>`), `${code} flyer shows ${label}`);
+    }
+  }
+
+  // No language may hardcode a figure of its own.
+  const source = await readFile(new URL("../tools/build-flyers.mjs", import.meta.url), "utf8");
+  assert.ok(!/23[,. ]?737/.test(source), "build-flyers.mjs must not restate the student figure");
 });

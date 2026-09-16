@@ -122,6 +122,25 @@ retains the full destination as `engagementDestinationUrl` for future checks.
 The public form metadata confirmed the title "Nuevo Foundation Programs
 Interest Form."
 
+## Updating the "Our impact" numbers
+
+Every figure in the flyer's impact section lives in one file, `site/impact.js`.
+To change a number, edit its `value` there and run:
+
+```
+node .\site\tools\build-flyers.mjs
+```
+
+All four language flyers are rewritten with the new figure, each formatted the
+way that language writes numbers: `23,737` in English and Spanish, `23 737` in
+French, `23.737` in Brazilian Portuguese. You never edit the same number twice,
+so translations cannot drift apart. The wording beside each figure stays with
+the translations in `site/tools/build-flyers.mjs` under `metricLabels`.
+
+The generator refuses to write if the English flyer's approved layout or wording
+has changed. Impact figures are deliberately exempt from that check, so updating
+a number succeeds while an accidental copy or layout change still fails loudly.
+
 The supplied flyer is an image, not an editable PDF. Parents share its hosted
 webpage as a link in the email, not as an attachment. Step 3 places **View the
 flyer** beside **Open my email app**. The separate image download remains
@@ -211,7 +230,8 @@ redrawn robot. Its colors and proportions are preserved.
 | `site/flyer.html`, `site/flyer.css` | Standalone branded HTML flyer with a working engagement link |
 | `site/flyer-es.html`, `site/flyer-fr.html`, `site/flyer-pt-br.html` | Translated flyers, generated from one template |
 | `site/i18n.js` | Every translated string, with one key set shared by all languages |
-| `site/tools/build-flyers.mjs` | Regenerates the flyer pages and verifies the English flyer is unchanged |
+| `site/impact.js` | The "Our impact" figures, defined once and formatted per language |
+| `site/tools/build-flyers.mjs` | Regenerates the flyer pages and verifies the English flyer's approved wording and layout are unchanged |
 | `site/form.html` | First-party short link with direct Microsoft Forms redirect and fallback |
 | `site/styles.css`, `site/theme.js` | Brand colors, responsive layout, and device theme |
 | `site/email.js` | Reviewed-template personalization, validation, copy and email-link helpers |

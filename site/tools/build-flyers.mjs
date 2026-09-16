@@ -2,12 +2,14 @@
 // each translation keeps identical layout, branding, and assets.
 // Run: node .\site\tools\build-flyers.mjs
 import { readFile, writeFile } from "node:fs/promises";
+import { localizedMetrics } from "../impact.js";
 
 const siteDir = new URL("../", import.meta.url);
 const engagementUrl =
   "https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR23fuGVglxBBl1KGeP0580dUQ1hUMVFQMjlFRlhQMFlKSTVGWEhBVUYxQSQlQCN0PWcu";
 
-// English wording is the approved campaign copy. Metrics are never re-stated.
+// English wording is the approved campaign copy. The impact figures live in
+// site/impact.js so a number is only ever updated in one place.
 export const flyerContent = {
   en: {
     htmlLang: "en",
@@ -28,14 +30,14 @@ export const flyerContent = {
     ],
     impactTitle: "Our impact",
     impactLead: "Expanding access to welcoming, relevant STEM experiences worldwide.",
-    metrics: [
-      ["students reached", "23,737"],
-      ["countries", "33"],
-      ["territories", "6"],
-      ["languages", "7"],
-      ["more interested in STEM", "85%"],
-      ["believed they learned to code", "90%"],
-    ],
+    metricLabels: {
+      studentsReached: "students reached",
+      countries: "countries",
+      territories: "territories",
+      languages: "languages",
+      moreInterestedInStem: "more interested in STEM",
+      learnedToCode: "believed they learned to code",
+    },
     contactTitle: "Start a conversation.",
     contactLead: "Tell us about your learners and the experience you have in mind.",
     homepage: "Visit nuevofoundation.org",
@@ -62,14 +64,14 @@ export const flyerContent = {
     ],
     impactTitle: "Nuestro impacto",
     impactLead: "Ampliamos el acceso a experiencias STEM acogedoras y relevantes en todo el mundo.",
-    metrics: [
-      ["estudiantes alcanzados", "23,737"],
-      ["países", "33"],
-      ["territorios", "6"],
-      ["idiomas", "7"],
-      ["más interés en STEM", "85%"],
-      ["consideró que aprendió a programar", "90%"],
-    ],
+    metricLabels: {
+      studentsReached: "estudiantes alcanzados",
+      countries: "países",
+      territories: "territorios",
+      languages: "idiomas",
+      moreInterestedInStem: "más interés en STEM",
+      learnedToCode: "consideró que aprendió a programar",
+    },
     contactTitle: "Iniciemos una conversación.",
     contactLead: "Cuéntanos sobre tus estudiantes y la experiencia que tienes en mente.",
     homepage: "Visita nuevofoundation.org",
@@ -96,14 +98,14 @@ export const flyerContent = {
     ],
     impactTitle: "Notre impact",
     impactLead: "Élargir l'accès à des expériences STIM accueillantes et pertinentes partout dans le monde.",
-    metrics: [
-      ["élèves touchés", "23 737"],
-      ["pays", "33"],
-      ["territoires", "6"],
-      ["langues", "7"],
-      ["plus d'intérêt pour les STIM", "85 %"],
-      ["estiment avoir appris à programmer", "90 %"],
-    ],
+    metricLabels: {
+      studentsReached: "élèves touchés",
+      countries: "pays",
+      territories: "territoires",
+      languages: "langues",
+      moreInterestedInStem: "plus d'intérêt pour les STIM",
+      learnedToCode: "estiment avoir appris à programmer",
+    },
     contactTitle: "Entamons la conversation.",
     contactLead: "Parle-nous de tes apprenants et de l'expérience que tu imagines.",
     homepage: "Visite nuevofoundation.org",
@@ -130,14 +132,14 @@ export const flyerContent = {
     ],
     impactTitle: "Nosso impacto",
     impactLead: "Ampliando o acesso a experiências de STEM acolhedoras e relevantes no mundo todo.",
-    metrics: [
-      ["estudantes alcançados", "23.737"],
-      ["países", "33"],
-      ["territórios", "6"],
-      ["idiomas", "7"],
-      ["mais interesse em STEM", "85%"],
-      ["acharam que aprenderam a programar", "90%"],
-    ],
+    metricLabels: {
+      studentsReached: "estudantes alcançados",
+      countries: "países",
+      territories: "territórios",
+      languages: "idiomas",
+      moreInterestedInStem: "mais interesse em STEM",
+      learnedToCode: "acharam que aprenderam a programar",
+    },
     contactTitle: "Vamos começar uma conversa.",
     contactLead: "Conte para nós sobre seus estudantes e a experiência que você imagina.",
     homepage: "Visite nuevofoundation.org",
@@ -172,7 +174,7 @@ export function renderFlyer(code) {
           <p>${body}</p>
         </article>`)
     .join("\n");
-  const metrics = content.metrics
+  const metrics = localizedMetrics(code, content.metricLabels)
     .map(([label, value]) => `          <div><dt>${label}</dt><dd>${value}</dd></div>`)
     .join("\n");
   return `<!doctype html>
@@ -235,15 +237,21 @@ ${metrics}
 const invokedDirectly = process.argv[1] && import.meta.url === new URL(`file://${process.argv[1].replace(/\\/g, "/")}`).href;
 
 if (invokedDirectly) {
-  // The English flyer is already approved, so confirm the template reproduces it
-  // exactly apart from the new language row before overwriting anything.
+  // The English flyer's design and wording are already approved, so confirm the
+  // template still reproduces it before overwriting anything. The impact figures
+  // are the one part that is meant to change, so they are blanked on both sides:
+  // updating a number in impact.js is allowed, while any other drift still fails.
   const existingEnglish = await readFile(new URL("flyer.html", siteDir), "utf8");
   const eol = existingEnglish.includes("\r\n") ? "\r\n" : "\n";
   const applyEol = (text) => (eol === "\n" ? text : text.replace(/\n/g, "\r\n"));
-  const stripNav = (text) => text.replace(/^ {6}<nav class="flyer-languages"[\s\S]*?<\/nav>\r?\n/m, "");
-  const withoutNav = stripNav(renderFlyer("en"));
-  if (applyEol(withoutNav) !== stripNav(existingEnglish)) {
-    throw new Error("Template no longer reproduces the approved English flyer; refusing to write.");
+  const normalize = (text) =>
+    text
+      .replace(/^ {6}<nav class="flyer-languages"[\s\S]*?<\/nav>\r?\n/m, "")
+      .replace(/<dd>[^<]*<\/dd>/g, "<dd>#</dd>");
+  if (applyEol(normalize(renderFlyer("en"))) !== normalize(existingEnglish)) {
+    throw new Error(
+      "The flyer template no longer reproduces the approved English flyer. Impact figures in impact.js may change freely; other wording and layout may not.",
+    );
   }
   for (const code of Object.keys(flyerContent)) {
     await writeFile(new URL(flyerContent[code].file, siteDir), applyEol(renderFlyer(code)), "utf8");
