@@ -87,28 +87,38 @@ retains the full destination as `engagementDestinationUrl` for future checks.
 The public form metadata confirmed the title "Nuevo Foundation Programs
 Interest Form."
 
-The supplied flyer is an image, not an editable PDF. Its pictured links do not
-remain clickable when downloaded. Parents can download it and attach it
-manually; `mailto` does **not** attach it automatically.
-Step 3 places **Download flyer** beside **Open my email app**, with instructions
-to choose `Nuevo-Foundation-flyer.png` using the email app's paperclip or
-**Attach file** control. Downloading does not add an attachment or send anything.
+The supplied flyer is an image, not an editable PDF. Parents share its hosted
+webpage as a link in the email, not as an attachment. Step 3 places **View the
+flyer** beside **Open my email app**. The separate image download remains
+optional for saving a copy; no download is required to share the flyer.
 
-**A public flyer address is not configured yet.** The builder says this clearly
-and leaves the flyer link out of generated emails. The interest form is not a
-substitute for the flyer.
-Once `verifiedFlyerUrl` is configured, the email preview and formatted clipboard
-display **View the flyer** as a hyperlink to that public address. Plain-text
-copying and `mailto` retain the full public flyer address instead. An empty
-configuration never creates a fake or local-only sharing link.
+The verified public flyer address is
+`https://angelica-salazar-code.github.io/parent-school-outreach/flyer.html`.
+`verifiedFlyerUrl` configures this personal GitHub Pages address. The email
+preview and formatted clipboard display **View the flyer** as a hyperlink.
+Plain-text copying and `mailto` retain the full public address instead.
+An empty configuration still omits the flyer link and explains why rather
+than generating a fake or local-only sharing link.
+
+### Comparison with the original campaign
+
+`campaigns/school-community-engagement/preview.html` is the editable HTML
+flyer/email prototype. Its sample email's `#flyer-panel` link switches tabs
+inside that preview; it is not a standalone link suitable for a recipient's
+email. Its engagement action opens a contact email.
+
+`site/flyer.html` hosts the supplied image of that flyer, with a text summary
+and a direct Microsoft Forms engagement action. Its full public HTTPS address
+works outside the preview and is the address used in parent emails. The
+original campaign and its impact wording are not modified by this change.
 
 ### Reviewer note: production hosting
 
 Both the parent-outreach website and the flyer should be hosted on Nuevo
-Foundation's official website. Once the flyer is hosted at a verified public
-address, add that address to the email as a link. The flyer cannot be attached
-automatically through **Open my email app**; parents must download it and attach
-it manually in their email application.
+Foundation's official website for the eventual production launch. The current
+personal GitHub Pages deployment already supplies a working flyer link.
+Parent emails share that link, not an attachment. Automatic file attachment
+through **Open my email app** is not supported.
 
 Before public launch:
 
@@ -124,8 +134,8 @@ Before public launch:
 4. Set `verifiedFlyerUrl` in `site/config.js` to that verified public flyer-page
    address. Never use a localhost, guessed address, or interest-form URL.
    Incorrect configuration shows an error and prevents draft generation.
-5. Re-run the checks and preview on desktop and mobile. The test asserting that
-   the flyer is currently unconfigured must be updated when a real URL is added.
+5. Re-run the checks and preview on desktop and mobile after changing the
+   configured flyer address.
 
 ### Design and files
 

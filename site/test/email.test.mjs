@@ -38,7 +38,7 @@ test("templates cover every grade and nonempty interest combination in a parent'
 test("no fabricated flyer link, attachment claim, or unrelated interests", () => {
   const email = createEmail(answers);
   assert.doesNotMatch(email.body, /Here is Nuevo Foundation's flyer|attached|localhost|STEM speakers|virtual sessions/);
-  assert.equal(verifiedFlyerUrl, "");
+  assert.equal(validateFlyerUrl(verifiedFlyerUrl), verifiedFlyerUrl);
   const configured = createEmail(answers, "https://nuevofoundation.org/outreach/flyer.html");
   assert.ok(configured.body.includes("https://nuevofoundation.org/outreach/flyer.html"));
 });
@@ -226,17 +226,26 @@ test("flyer hosted on the same site as the short link remains valid", () => {
   assert.throws(() => validateFlyerUrl(engagementUrl));
 });
 
-test("step three offers a real flyer download with explicit manual attachment instructions", async () => {
+test("step three shares the flyer as a page link rather than an attachment", async () => {
   const html = await readFile(new URL("../index.html", import.meta.url), "utf8");
   const step = html.match(/<div class="send-box">([\s\S]*?)<p id="draft-status"/)[1];
-  assert.match(step, /id="download-email-flyer"[^>]+href="\.\/assets\/nuevo-foundation-flyer\.png"[^>]+download="Nuevo-Foundation-flyer\.png"/);
+  assert.match(step, /id="view-email-flyer"[^>]+href="\.\/flyer\.html"/);
   assert.match(step, /id="open-email"/);
-  assert.match(step, /paperclip or "Attach file"/);
-  assert.match(step, /cannot attach the file automatically/);
+  assert.doesNotMatch(step, /download=|Download flyer|Attach file|paperclip/);
+  assert.match(step, /including "View the flyer."/);
   const css = await readFile(new URL("../styles.css", import.meta.url), "utf8");
   assert.match(css, /\.send-actions \{[^}]*flex-wrap: wrap/);
 });
 
+test("configured flyer link survives email-app encoding and formatted copy", () => {
+  assert.ok(verifiedFlyerUrl);
+  const draft = createEmail(answers, verifiedFlyerUrl);
+  assert.ok(formattedMessage(draft.body, verifiedFlyerUrl).includes(`<a href="${verifiedFlyerUrl}">View the flyer</a>`));
+  const mailto = new URL(createMailto(draft).url);
+  assert.ok(mailto.searchParams.get("body").includes(verifiedFlyerUrl));
+  assert.equal(mailto.searchParams.has("attachment"), false);
+  assert.doesNotMatch(draft.body, /attached|attachment/i);
+});
 test("the supplied flyer is preserved byte-for-byte and the local logo is present", async () => {
   const image = await readFile(new URL("../assets/nuevo-foundation-flyer.png", import.meta.url));
   assert.equal(createHash("sha256").update(image).digest("hex"), "2dc8f8a1632baa2738112b3a64d33bbd1cca883d3362e637ff4ee671e7fab398");
