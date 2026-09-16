@@ -201,14 +201,37 @@ test("email preview and flyer buttons consistently use the verified short link",
   assert.ok(new URL(createMailto(draft).url).searchParams.get("body").includes(engagementUrl));
   for (const filename of ["index.html", "flyer.html"]) {
     const html = await readFile(new URL(`../${filename}`, import.meta.url), "utf8");
-    const links = [...html.matchAll(/href="(https:\/\/[^"]+)"/g)].map((match) => match[1]);
-    assert.equal(links.length, filename === "index.html" ? 1 : 2);
+    const links = [...html.matchAll(/href="(https:\/\/forms\.cloud\.microsoft[^"]+)"/g)].map((match) => match[1]);
+    assert.equal(links.length, 1);
     for (const link of links) assert.equal(link, engagementDestinationUrl);
     assert.ok(!html.includes("tinyurl.com"));
     assert.ok(html.includes("connect-src 'none'"));
     assert.ok(html.includes("form-action 'none'"));
-    assert.ok(html.includes('class="flyer-hotspot"'));
-    assert.ok(html.includes('download="Nuevo-Foundation-flyer.png"'));
+    if (filename === "index.html") {
+      assert.ok(html.includes('class="flyer-hotspot"'));
+      assert.ok(html.includes('download="Nuevo-Foundation-flyer.png"'));
+    }
+  }
+});
+
+test("standalone flyer is branded HTML content rather than an image wrapper", async () => {
+  const html = await readFile(new URL("../flyer.html", import.meta.url), "utf8");
+  const original = await readFile(new URL("../../campaigns/school-community-engagement/preview.html", import.meta.url), "utf8");
+  assert.match(html, /data-theme="light"/);
+  assert.match(html, /href="\.\/flyer\.css"/);
+  assert.match(html, /src="\.\/assets\/nuevo-foundation-logo\.svg"/);
+  assert.match(html, /src="\.\/assets\/nuevo-foundation-mascot\.jpg"/);
+  assert.doesNotMatch(html, /nuevo-foundation-flyer\.png|download=|<script|flyer-hotspot|Create an email|View larger|text summary/i);
+  for (const text of [
+    "Bring an inspiring STEM experience to your students.",
+    "We help young people become curious, confident, and courageous through hands-on coding, relatable role models, and engaging STEM experiences.",
+    "Guided, hands-on activities help students build technology skills and confidence.",
+    "Flexible online experiences connect learners with STEM from wherever they are.",
+    "Real stories from professionals help students see a place for themselves in STEM.",
+    "23,737", "33", "6", "7", "85%", "90%",
+  ]) {
+    assert.ok(original.includes(text), `Original campaign contains ${text}`);
+    assert.ok(html.includes(text), `Standalone flyer preserves ${text}`);
   }
 });
 

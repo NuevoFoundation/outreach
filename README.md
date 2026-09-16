@@ -75,11 +75,13 @@ node --test .\site\test\email.test.mjs
 
 ### Flyer and launch configuration
 
-The user-supplied original flyer is preserved at
-`site/assets/nuevo-foundation-flyer.png`. Its red engagement button is covered
-by an accessible link on both the builder and `site/flyer.html`; a separate,
-visible engagement link is also available on the standalone flyer page only. All
-engagement buttons use the original Microsoft Forms destination directly.
+The user-supplied original flyer image is preserved at
+`site/assets/nuevo-foundation-flyer.png` for the builder's small preview and
+optional image download. Its red engagement button has an accessible overlay.
+`site/flyer.html` is the flyer itself: responsive HTML using the original campaign
+wording, official logo and mascot, and shared Nuevo Foundation color palette.
+It opens directly without a screenshot wrapper, tabs, or a download step.
+Its engagement button opens the original Microsoft Forms destination directly.
 Email drafts use `https://angelica-salazar-code.github.io/parent-school-outreach/form.html`
 as a shorter link to the same form. TinyURL was removed after real browser
 navigation began showing its deprecated-API interstitial. `site/config.js`
@@ -107,10 +109,14 @@ flyer/email prototype. Its sample email's `#flyer-panel` link switches tabs
 inside that preview; it is not a standalone link suitable for a recipient's
 email. Its engagement action opens a contact email.
 
-`site/flyer.html` hosts the supplied image of that flyer, with a text summary
-and a direct Microsoft Forms engagement action. Its full public HTTPS address
-works outside the preview and is the address used in parent emails. The
-original campaign and its impact wording are not modified by this change.
+`site/flyer.html` adapts the original campaign's flyer as a standalone HTML
+document, preserving its copy and impact figures rather than inventing new
+claims. The figures still require campaign-owner review; this is not independent
+verification of the metrics. It uses the canonical workshops palette and a direct
+Microsoft Forms engagement action. Its full public HTTPS address works outside
+the preview and is the address used in parent emails. The original campaign
+files are unchanged. The flyer keeps its white/yellow/red branding even on
+devices set to dark mode; the parent builder still supports both themes.
 
 ### Reviewer note: production hosting
 
@@ -128,7 +134,7 @@ Before public launch:
    flyer on Nuevo Foundation's official website over HTTPS. No deployment
    workflow is configured by this change.
 3. Verify that the hosted `flyer.html` page opens without signing in, that its
-   image loads, and that its engagement link opens the intended form. The form
+   logo and mascot load, and that its engagement link opens the intended form. The form
    was supplied by the owner. Its title and public metadata have been checked;
    the complete respondent experience still requires review before launch.
 4. Set `verifiedFlyerUrl` in `site/config.js` to that verified public flyer-page
@@ -156,7 +162,7 @@ redrawn robot. Its colors and proportions are preserved.
 | File | Purpose |
 | --- | --- |
 | `site/index.html` | Three-question form, editable email, and flyer preview |
-| `site/flyer.html` | Larger original flyer with a working engagement link |
+| `site/flyer.html`, `site/flyer.css` | Standalone branded HTML flyer with a working engagement link |
 | `site/form.html` | First-party short link with direct Microsoft Forms redirect and fallback |
 | `site/styles.css`, `site/theme.js` | Brand colors, responsive layout, and device theme |
 | `site/email.js` | Reviewed-template personalization, validation, copy and email-link helpers |
