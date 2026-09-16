@@ -47,11 +47,11 @@ export const flyerContent = {
     htmlLang: "es",
     file: "flyer-es.html",
     title: "Folleto de divulgación de Nuevo Foundation",
-    description: "Lleve una experiencia STEM inspiradora a sus estudiantes con los talleres de programación, las sesiones virtuales y las charlas de Nuevo Foundation.",
+    description: "Lleva una experiencia STEM inspiradora a tus estudiantes con los talleres de programación, las sesiones virtuales y las charlas de Nuevo Foundation.",
     home: "Visitar la página principal de Nuevo Foundation",
     org: "Organización sin fines de lucro 501(c)(3)<br>de STEM con sede en Seattle",
     eyebrow: "Para familias, escuelas y grupos comunitarios",
-    headline: "Lleve una experiencia STEM inspiradora a sus estudiantes.",
+    headline: "Lleva una experiencia STEM inspiradora a tus estudiantes.",
     lead: "Ayudamos a que las y los jóvenes sean curiosos, seguros y valientes mediante programación práctica, modelos a seguir cercanos y experiencias STEM atractivas.",
     mascotAlt: "Mascota de Nuevo Foundation sosteniendo una computadora portátil",
     programsLabel: "Programas",
@@ -71,8 +71,8 @@ export const flyerContent = {
       ["consideró que aprendió a programar", "90%"],
     ],
     contactTitle: "Iniciemos una conversación.",
-    contactLead: "Cuéntenos sobre sus estudiantes y la experiencia que tiene en mente.",
-    homepage: "Visite nuevofoundation.org",
+    contactLead: "Cuéntanos sobre tus estudiantes y la experiencia que tienes en mente.",
+    homepage: "Visita nuevofoundation.org",
     cta: "Solicitar una colaboración",
     ctaNote: "(abre Microsoft Forms en una pestaña nueva)",
     languageLabel: "Idioma",
@@ -81,11 +81,11 @@ export const flyerContent = {
     htmlLang: "fr",
     file: "flyer-fr.html",
     title: "Brochure de sensibilisation Nuevo Foundation",
-    description: "Offrez à vos élèves une expérience STIM inspirante grâce aux ateliers de programmation, aux séances virtuelles et aux rencontres de Nuevo Foundation.",
+    description: "Offre à tes élèves une expérience STIM inspirante grâce aux ateliers de programmation, aux séances virtuelles et aux rencontres de Nuevo Foundation.",
     home: "Visiter la page d'accueil de Nuevo Foundation",
     org: "Organisme à but non lucratif 501(c)(3)<br>en STIM basé à Seattle",
     eyebrow: "Pour les familles, les écoles et les groupes communautaires",
-    headline: "Offrez à vos élèves une expérience STIM inspirante.",
+    headline: "Offre à tes élèves une expérience STIM inspirante.",
     lead: "Nous aidons les jeunes à devenir curieux, confiants et courageux grâce à la programmation pratique, à des modèles auxquels s'identifier et à des expériences STIM stimulantes.",
     mascotAlt: "Mascotte de Nuevo Foundation tenant un ordinateur portable",
     programsLabel: "Programmes",
@@ -105,8 +105,8 @@ export const flyerContent = {
       ["estiment avoir appris à programmer", "90 %"],
     ],
     contactTitle: "Entamons la conversation.",
-    contactLead: "Parlez-nous de vos apprenants et de l'expérience que vous imaginez.",
-    homepage: "Visitez nuevofoundation.org",
+    contactLead: "Parle-nous de tes apprenants et de l'expérience que tu imagines.",
+    homepage: "Visite nuevofoundation.org",
     cta: "Demander une collaboration",
     ctaNote: "(ouvre Microsoft Forms dans un nouvel onglet)",
     languageLabel: "Langue",
@@ -240,8 +240,9 @@ if (invokedDirectly) {
   const existingEnglish = await readFile(new URL("flyer.html", siteDir), "utf8");
   const eol = existingEnglish.includes("\r\n") ? "\r\n" : "\n";
   const applyEol = (text) => (eol === "\n" ? text : text.replace(/\n/g, "\r\n"));
-  const withoutNav = renderFlyer("en").replace(/^ {6}<nav class="flyer-languages"[\s\S]*?<\/nav>\n/m, "");
-  if (applyEol(withoutNav) !== existingEnglish) {
+  const stripNav = (text) => text.replace(/^ {6}<nav class="flyer-languages"[\s\S]*?<\/nav>\r?\n/m, "");
+  const withoutNav = stripNav(renderFlyer("en"));
+  if (applyEol(withoutNav) !== stripNav(existingEnglish)) {
     throw new Error("Template no longer reproduces the approved English flyer; refusing to write.");
   }
   for (const code of Object.keys(flyerContent)) {

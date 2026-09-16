@@ -183,3 +183,23 @@ test("the flyer language row is styled for touch and hidden when printed", async
   assert.match(css, /\.flyer-languages a \{[^}]*min-height: 44px/);
   assert.match(css, /@media print \{[\s\S]*\.flyer-languages \{ display: none; \}/);
 });
+
+test("Spanish and French address the parent informally, never with usted or vous", async () => {
+  const formal = {
+    es: /\busted(es)?\b/i,
+    fr: /\b(vous|votre|vos)\b/i,
+  };
+  const collect = (value, out = []) => {
+    if (typeof value === "string") out.push(value);
+    else if (value && typeof value === "object") for (const item of Object.values(value)) collect(item, out);
+    return out;
+  };
+  for (const [code, pattern] of Object.entries(formal)) {
+    for (const line of collect(translations[code])) {
+      assert.ok(!pattern.test(line), `${code} string keeps a formal register: ${line}`);
+    }
+    for (const line of collect(flyerContent[code])) {
+      assert.ok(!pattern.test(line), `${code} flyer string keeps a formal register: ${line}`);
+    }
+  }
+});
