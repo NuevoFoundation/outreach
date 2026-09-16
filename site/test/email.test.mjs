@@ -193,8 +193,8 @@ test("a verified hosted flyer becomes a clickable preview and copied-email link"
 });
 
 test("email preview and flyer buttons consistently use the verified short link", async () => {
-  assert.equal(engagementUrl, "https://tinyurl.com/23cx2alr");
-  assert.ok(engagementUrl.length < 40);
+  assert.equal(engagementUrl, "https://angelica-salazar-code.github.io/parent-school-outreach/form.html");
+  assert.ok(engagementUrl.length < engagementDestinationUrl.length);
   const draft = createEmail(answers);
   assert.ok(draft.body.includes(engagementUrl));
   assert.ok(!draft.body.includes(engagementDestinationUrl));
@@ -203,13 +203,27 @@ test("email preview and flyer buttons consistently use the verified short link",
     const html = await readFile(new URL(`../${filename}`, import.meta.url), "utf8");
     const links = [...html.matchAll(/href="(https:\/\/[^"]+)"/g)].map((match) => match[1]);
     assert.equal(links.length, 2);
-    for (const link of links) assert.equal(link, engagementUrl);
-    assert.ok(!html.includes(engagementDestinationUrl));
+    for (const link of links) assert.equal(link, engagementDestinationUrl);
+    assert.ok(!html.includes("tinyurl.com"));
     assert.ok(html.includes("connect-src 'none'"));
     assert.ok(html.includes("form-action 'none'"));
     assert.ok(html.includes('class="flyer-hotspot"'));
     assert.ok(html.includes('download="Nuevo-Foundation-flyer.png"'));
   }
+});
+
+test("first-party form link redirects to the exact Microsoft Form with a manual fallback", async () => {
+  const html = await readFile(new URL("../form.html", import.meta.url), "utf8");
+  assert.ok(html.includes(`content="0;url=${engagementDestinationUrl}"`));
+  assert.ok(html.includes(`href="${engagementDestinationUrl}"`));
+  assert.doesNotMatch(html, /tinyurl\.com|<script|<form[\s>]/);
+});
+
+test("flyer hosted on the same site as the short link remains valid", () => {
+  const flyer = "https://angelica-salazar-code.github.io/parent-school-outreach/flyer.html";
+  assert.equal(validateFlyerUrl(flyer), flyer);
+  assert.ok(createEmail(answers, flyer).body.includes(flyer));
+  assert.throws(() => validateFlyerUrl(engagementUrl));
 });
 
 test("step three offers a real flyer download with explicit manual attachment instructions", async () => {

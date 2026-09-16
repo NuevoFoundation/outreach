@@ -66,10 +66,9 @@ node --test .\site\test\email.test.mjs
   links also fall back to copying because email applications have varying limits.
 - The separate Microsoft interest form opens only when its link is selected.
   No parent answers are added to that address. The form has its own data handling.
-- The engagement short link uses TinyURL, an external redirect service. Only the
-  public form address was provided to create it; no parent answers are sent to
-  TinyURL. Following the link makes a request to TinyURL before Microsoft Forms,
-  so its availability and request-logging policies also apply.
+- Engagement buttons open Microsoft Forms directly. The email's shorter link
+  uses the personal Pages site's `form.html`, which opens the same Microsoft
+  Form and provides a manual fallback. No answers are passed to that page.
 - The page does not request children's names. Browser extensions, browser/cloud
   spellchecking settings, operating-system services, and the email application
   remain outside the site's control.
@@ -79,12 +78,14 @@ node --test .\site\test\email.test.mjs
 The user-supplied original flyer is preserved at
 `site/assets/nuevo-foundation-flyer.png`. Its red engagement button is covered
 by an accessible link on both the builder and `site/flyer.html`; a separate,
-visible engagement link is also available below the image. The email and all
-engagement buttons use `https://tinyurl.com/23cx2alr`. Its HTTP 301 redirect was
-verified on September 15, 2026 against the exact Microsoft Forms destination
-supplied by the outreach owner. `site/config.js` retains that full destination
-as `engagementDestinationUrl` for future checks. The public form metadata also
-confirmed the title "Nuevo Foundation Programs Interest Form."
+visible engagement link is also available below the image. All
+engagement buttons use the original Microsoft Forms destination directly.
+Email drafts use `https://angelica-salazar-code.github.io/parent-school-outreach/form.html`
+as a shorter link to the same form. TinyURL was removed after real browser
+navigation began showing its deprecated-API interstitial. `site/config.js`
+retains the full destination as `engagementDestinationUrl` for future checks.
+The public form metadata confirmed the title "Nuevo Foundation Programs
+Interest Form."
 
 The supplied flyer is an image, not an editable PDF. Its pictured links do not
 remain clickable when downloaded. Parents can download it and attach it
@@ -146,6 +147,7 @@ redrawn robot. Its colors and proportions are preserved.
 | --- | --- |
 | `site/index.html` | Three-question form, editable email, and flyer preview |
 | `site/flyer.html` | Larger original flyer with a working engagement link |
+| `site/form.html` | First-party short link with direct Microsoft Forms redirect and fallback |
 | `site/styles.css`, `site/theme.js` | Brand colors, responsive layout, and device theme |
 | `site/email.js` | Reviewed-template personalization, validation, copy and email-link helpers |
 | `site/app.js` | Browser interactions and protection against overwriting edited drafts |
